@@ -79,7 +79,7 @@ app.use(cors({
 app.use(
   session({
     store: new PgSession({
-      pool: pgPool,
+      pool: db,
       tableName: 'session'
     }),
     secret: process.env.SESSION_SECRET,
