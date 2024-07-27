@@ -18,7 +18,7 @@ import { fileURLToPath } from 'url';
 import { v4 as uuidv4 } from 'uuid';
 import {Server} from 'socket.io';
 import {createServer} from 'http';
-
+import connectPgSimple from 'connect-pg-simple';
 
 const app=express();
 const httpServer=createServer(app);
@@ -69,7 +69,7 @@ const db = new pg.Client({
   port: process.env.PORT_POSTGRESQL,
 });
 db.connect();
-
+const PgSession = connectPgSimple(session);
 app.use(cors({
   origin: 'http://localhost:3000',
   credentials: true,
@@ -78,6 +78,10 @@ app.use(cors({
 
 app.use(
   session({
+    store: new PgSession({
+      pool: pgPool,
+      tableName: 'session'
+    }),
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
