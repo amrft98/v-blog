@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState,useContext } from 'react';
 import './setting.css';
 import ResponsiveAppBar from "./bar";
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
+import { AuthContext } from "./authContext";
 function Setting (){
     const navigate=useNavigate();
   const [showNameForm, setShowNameForm] = useState(false);
@@ -11,6 +12,7 @@ function Setting (){
   const [passwordData, setPasswordData] = useState({ oldPassword: '', newPassword: '' ,cfnewPassword:''});
 const [err,seterror]=useState(false);
 const [cferr,setcferr]=useState(false);
+const {token}=useContext(AuthContext);
   const handleNameChange = (e) => {
     const { name, value } = e.target;
     setNameData({ ...nameData, [name]: value });
@@ -24,7 +26,7 @@ const [cferr,setcferr]=useState(false);
   const handleNameSubmit = async (e) => {
     e.preventDefault();
     try{
-const response= await axios.patch(`http://localhost:8000/api/updatename`,nameData,{withCredentials:true});
+const response= await axios.patch(`https://v-blog-4grx.onrender.com/api/updatename`,nameData,{headers:{Authorization:`Bearer ${token}`}} ,{withCredentials:true});
 if(response.data.message==="done"){
     navigate("/home");
 }
@@ -37,7 +39,7 @@ console.log(err);
   const handlePasswordSubmit = async (e) => {
     e.preventDefault();
     try{
-        const response= await axios.patch(`http://localhost:8000/api/updatepassword`,passwordData,{withCredentials:true});
+        const response= await axios.patch(`https://v-blog-4grx.onrender.com/api/updatepassword`,passwordData,{headers:{Authorization:`Bearer ${token}`}} ,{withCredentials:true});
         if(response.data.message==="changing password is complete"){
             console.log(response.data.message);
         navigate("/home");
@@ -51,7 +53,8 @@ setcferr(true);
         }
     }
     catch(err){
-console.log(err);
+
+console.log(err.response.status);
     }
 
   };

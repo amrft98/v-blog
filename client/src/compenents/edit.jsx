@@ -3,8 +3,9 @@ import './newpost.css';
 import {useNavigate,useParams} from 'react-router-dom';
 import ResponsiveAppBar from "./bar";
 import axios from 'axios';
-
+import { AuthContext } from "./authContext";
 function Edit(){
+	const {token}=useContext(AuthContext);
 	const [postData,setPostData]=useState({
 		postTitle:'',
 		postContent:'',});
@@ -14,18 +15,15 @@ function Edit(){
         const showpage = async ()=>{
             try{
 				
-                const response=await axios.get(`http://localhost:8000/api/newpost`,{withCredentials:true});
-                console.log(response.data);
-				
-				console.log(id);
+                const response=await axios.get(`https://v-blog-4grx.onrender.com/api/newpost`,{headers:{Authorization:`Bearer ${token}`}},{withCredentials:true});
                 if(response.data.message!='true'){
                     navigate("/");
                 }
                else{
               try{
-const response=await axios.get(`http://localhost:8000/api/edit/${id}`,{withCredentials:true});
+const response=await axios.get(`https://v-blog-4grx.onrender.com/api/edit/${id}`,{headers:{Authorization:`Bearer ${token}`}},{withCredentials:true});
 if(response.data.post==="NOT MATCH"){
-navigate("/my-page")
+navigate("/home")
 }
 
 else{
@@ -44,14 +42,16 @@ console.log(err);
             }
 
             catch(err){
-        console.log(err);
+				if (err.response.status ===401||err.response.status===500) {
+                    navigate("/");
+                }
             }
         };
     showpage();
     },[]);
 const navigate=useNavigate();
 function exitClick(){
-   navigate('/my-page');
+   navigate('/home');
 }
 
 
@@ -62,8 +62,7 @@ setPostData({...postData,[name]:value});
 const handleSubmit =async (e) =>{
     e.preventDefault();
   try{
-const response=await axios.patch(`http://localhost:8000/api/edit/${id}`,postData,{withCredentials:true});
-console.log(response.data.message);
+const response=await axios.patch(`https://v-blog-4grx.onrender.com/api/edit/${id}`,postData,{headers:{Authorization:`Bearer ${token}`}},{withCredentials:true});
 if(response.data.message==='done'){
 navigate('/my-page');
 }
@@ -71,8 +70,10 @@ else{
 	navigate("/");
 }
   }
-  catch(e){
-console.log(e)
+  catch(err){
+	if (err.response.status ===401||err.response.status===500) {
+		navigate("/");
+	}
   }
 }
 return <div>

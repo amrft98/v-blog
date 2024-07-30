@@ -1,24 +1,34 @@
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import './search.css';
 import axios from 'axios';
+import { AuthContext } from "./authContext";
 import { useLocation, useNavigate } from "react-router-dom";
 function Search() {
     const navigate = useNavigate();
     const location = useLocation();
     const [text, settext] = useState(null);
+    const {token}=useContext(AuthContext);
     function handleChange(e) {
         const { value } = e.target;
         settext(value);
     }
     const handleClick = async () => {
-       const response=await axios.get(`http://localhost:8000/api/search/${text}`,{withCredentials:true});
-       console.log(response.data.message);
-       if( response.data.message==="true"){
-        navigate(`/search/${text}`);
-       }
-else{
-navigate("/");
-}
+        try{
+            const response=await axios.get(`https://v-blog-4grx.onrender.com/api/search/${text}`,{headers:{Authorization:`Bearer ${token}`}} ,{withCredentials:true});
+            if( response.data.message==="true"){
+             navigate(`/search/${text}`);
+            }
+            else{
+                navigate("/");
+                }
+        }
+        catch(err){
+            if (err.response.status ===401||err.response.status===500) {
+                navigate("/");
+            }
+        }
+
+
     }
     return <div className="search">
         <input required name="search" value={text} onChange={handleChange} type="text" className="search__input" placeholder="Type your text" />

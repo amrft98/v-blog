@@ -15,7 +15,21 @@
     border: 3px dashed transparent;
     max-width: 500px;
   }
-  
+  @media(max-width:768px){
+    .task{
+     position: static;
+        justify-content: left;
+      align-items: left;
+        color: #2e2e2f;
+        background-color: #fff;
+      padding: 1rem;
+        border-radius: 8px;
+        box-shadow: rgba(99, 99, 99, 0.1) 0px 2px 8px 0px;
+        margin-bottom: 1rem;
+        border: 3px dashed transparent;
+        max-width: auto;
+    }
+      }
   .task:hover {
     box-shadow: rgba(99, 99, 99, 0.3) 0px 2px 8px 0px;
     border-color: rgba(162, 179, 207, 0.2) !important;

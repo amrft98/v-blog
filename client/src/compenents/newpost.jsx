@@ -1,16 +1,20 @@
-import React, { useState,useEffect } from 'react';
+import React, { useState,useEffect,useContext } from 'react';
 import './newpost.css';
 import {useNavigate} from 'react-router-dom'
 import axios from 'axios';
 import ResponsiveAppBar from "./bar";
+import { AuthContext } from "./authContext";
 function Post(){
 	const [err,seterror]=useState(false);
 	const[err0,seterror0]=useState(false);
+	const {token}=useContext(AuthContext);
 	useEffect(()=>{
+		console.log(token);
         const showpage = async ()=>{
             try{
-                const response=await axios.get('http://localhost:8000/api/newpost',{withCredentials:true});
-                console.log(response.data);
+                const response=await axios.get('https://v-blog-4grx.onrender.com/api/newpost',{headers:{Authorization:`Bearer ${token}`}},{withCredentials:true});
+				
+				console.log(response);
                 if(response.data.message!='true'){
                     navigate("/");
                 }
@@ -18,7 +22,10 @@ function Post(){
             }
 
             catch(err){
-        console.log(err);
+				console.log(err);
+          if (err.response.status ===401||err.response.status===500) {
+			navigate("/");
+		}
             }
         };
     showpage();
@@ -38,7 +45,7 @@ setPostData({...postData,[name]:value});
 const handleSubmit =async (e) =>{
     e.preventDefault();
   try{
-const response=await axios.post("http://localhost:8000/api/posting",postData,{withCredentials:true});
+const response=await axios.post("https://v-blog-4grx.onrender.com/api/posting",postData,{headers:{Authorization:`Bearer ${token}`}},{withCredentials:true});
 console.log(response.data.message);
 if(response.data.message==='done'){
 navigate('/home');
@@ -53,8 +60,10 @@ else{
 	navigate("/");
 }
   }
-  catch(e){
-console.log(e)
+  catch(err){
+	if (err.response.status ===401||err.response.status===500) {
+		navigate("/");
+	}
   }
 }
 return <div>

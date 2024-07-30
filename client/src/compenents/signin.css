@@ -138,11 +138,11 @@
  .a-forget{
   font-size: small;
   color: black;
- 
+  cursor: pointer;
   }
 .a-forget:hover{
   text-decoration: underline black;
-
+  cursor: pointer;
 }
 .a-forget:visited{
 color: #000;

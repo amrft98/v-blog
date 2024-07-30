@@ -1,6 +1,7 @@
-import React , { useEffect, useState, createContext }from "react";
+import React , { useEffect, useState, useContext }from "react";
 import axios from "axios";
 import ResponsiveAppBar from "./bar"
+import { AuthContext } from "./authContext";
 import {useNavigate,useParams} from 'react-router-dom';
 function Profile() {
     const navigate = useNavigate();
@@ -9,11 +10,12 @@ function Profile() {
     const [post0, setpost] = useState([]);
     const [page,setPage]=useState(intialPage);
     const [totalPages,setTotalPages]=useState(1);
+    const {token}=useContext(AuthContext);
     useEffect(() => {
         
         const showprofile = async () => {
             try {
-                const response = await axios.get(`http://localhost:8000/api/profile/${id}?page=${page}`, { withCredentials: true });
+                const response = await axios.get(`https://v-blog-4grx.onrender.com/api/profile/${id}?page=${page}`,{headers:{Authorization:`Bearer ${token}`}}, { withCredentials: true });
                 console.log(response.data);
                 if (response.data.message ==="false") {
                     navigate("/");
@@ -25,7 +27,9 @@ function Profile() {
             }
 
             catch (err) {
-                console.log(err);
+                if (err.response.status ===401||err.response.status===500) {
+                    navigate("/");
+                }
             }
         };
         showprofile();

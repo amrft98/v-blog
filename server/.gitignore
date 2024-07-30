@@ -1,8 +1,8 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 .env
-firebaseAdmin.js
 page.js
 server.js
+v-blog-3bcaf-firebase-adminsdk-hxu7i-ccc42dfa9b.json
 # dependencies
 /node_modules
 /.pnp
