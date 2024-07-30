@@ -24,7 +24,7 @@ function ResetPassword(){
   async function handlePasswordSubmit(e){
     e.preventDefault();
     try{
-const response=await axios.patch(`http://localhost:8000/api/setnewpassword`,{email:email,otp:otp,passwords:passwordData},{withCredentials:true});
+const response=await axios.patch(`https://v-blog-4grx.onrender.com/api/setnewpassword`,{email:email,otp:otp,passwords:passwordData},{withCredentials:true});
 if(response.data.message==="Changed successfully"){
     console.log(response.data)
     navigate("/login");
@@ -47,7 +47,7 @@ console.log(err);
     }
    async function handleSubmit(e){
     e.preventDefault();
-const response =await axios.post(`http://localhost:8000/api/reset-password/verify-email`,{email:email},{withCredentials:true});
+const response =await axios.post(`https://v-blog-4grx.onrender.com/api/reset-password/verify-email`,{email:email},{withCredentials:true});
 if(response.data.message==="success"){
     setStep(2);
 }
@@ -57,7 +57,7 @@ setmessage(true);
     }
     async function handleClick(e){
         e.preventDefault();
-        const response = await axios.post(`http://localhost:8000/api/reset-password/verify-otp`,{otp:otp,email:email},{withCredentials:true});
+        const response = await axios.post(`https://v-blog-4grx.onrender.com/api/reset-password/verify-otp`,{otp:otp,email:email},{withCredentials:true});
 if(response.data.message==="comparison was successful"){
     setStep(3);
   

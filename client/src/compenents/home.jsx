@@ -1,35 +1,41 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useContext } from "react";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import ResponsiveAppBar from "./bar";
 import SplitButton from './option';
 import { socket } from "./socket";
+import { AuthContext } from "./authContext";
 import './page.css';
 function Home(){
+    axios.defaults.withCredentials=true;
     const navigate = useNavigate();
     const intialPage=parseInt(localStorage.getItem('currentPagehome'))||1;
     const [post1, setpost1] = useState([]);
     const [page,setPage]=useState(intialPage);
     const [totalPages,setTotalPages]=useState(1);
     const [userid, setiduser] = useState("");
+    const {token}=useContext(AuthContext);
     useEffect(() => {
-       
+        console.log("home page token is ",token);
         const showpage = async () => {
-          
             try {
-                const response = await axios.get(`http://localhost:8000/api/home?page=${page}`, { withCredentials: true });
-                if (response.data.message ==="false") {
+                const response = await axios.get(`https://v-blog-4grx.onrender.com/api/home?page=${page}`,{headers:{Authorization:`Bearer ${token}`},withCredentials: true});
+                console.log(response);
+                if (response.status ===500||response.status===401) {
                     navigate("/");
                 }
                 else {
                     setpost1([...response.data.post]);
                     setiduser(response.data.userid);
                setTotalPages(response.data.totalPages);
+               console.log(token);
                 }
             }
 
             catch (err) {
-                console.log(err);
+                if (err.response.status ===401||err.response.status===500) {
+                    navigate("/");
+                }
             }
        
         }; 

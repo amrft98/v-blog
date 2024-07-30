@@ -11,23 +11,22 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
 import Diversity1Icon from '@mui/icons-material/Diversity1';
-import SearchIcon from '@mui/icons-material/Search';
 import Search from './search';
 import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
-
+import { AuthContext } from "./authContext";
 
 
 function ResponsiveAppBar() {
   const navigate=useNavigate();
+  const {token}=React.useContext(AuthContext);
   const [settings]=React.useState([
     {name:'Profile',action:()=>navigate("/edit/profile")},
     {name:'Account',action:()=>navigate("/setting")},
     {name: 'Logout',action:async ()=>{
 try{
-const response= await axios.get('/api/logout');
+const response= await axios.get('https://v-blog-4grx.onrender.com/api/logout',{headers:{Authorization:`Bearer ${token}`}}, { withCredentials: true });
 if(response.data.message==='logout'){
   localStorage.clear();
 navigate('/');
@@ -64,26 +63,36 @@ console.log(err);
   const [data2,setData2]=React.useState("");
 React.useEffect(()=>{
   const showpage = async () => {
-const [response1,response2]= await Promise.all([
- axios.get(`http://localhost:8000/api/bar`, { withCredentials: true })
- ,axios.get(`http://localhost:8000/api/profile/pic`, { withCredentials: true })
-]);
-const fname=response1.data.fullname.first_name;
-const lname=response1.data.fullname.last_name;
-const updatename=[...pages];
+ try{
+const response1=await axios.get(`https://v-blog-4grx.onrender.com/api/bar`,{headers:{Authorization:`Bearer ${token}`}}, { withCredentials: true })
+ const response2=await axios.get(`https://v-blog-4grx.onrender.com/api/profile/pic`,{headers:{Authorization:`Bearer ${token}`}} , { withCredentials: true })
+ 
+ const fname=response1.data.fullname.first_name;
+ const lname=response1.data.fullname.last_name;
+ console.log(`${fname} ${lname}`);
+ const updatename=[...pages];
 updatename[1]={
 ...updatename[1],name:fname+" "+lname
 };
 setpages(updatename);
 console.log(response2.data.message.image);
 setData2(response2.data.message.image);
+}
+catch(err){
+  if (err.response.status ===401||err.response.status===500) {
+    navigate("/");
+}
+}
+
   };
   showpage();
 },[]);
-console.log(data2)
+function handleHomeClick(){
+  navigate("/home")
+}
   return (
 
-    <AppBar style={{ background: '#2E3B55' }} position="static" >
+    <AppBar style={{ background: '#2E3B55' }} position="relative" >
 
       <Container maxWidth="xl">
         <Toolbar disableGutters>
@@ -92,7 +101,7 @@ console.log(data2)
             variant="h6"
             noWrap
             component="a"
-            href="/home"
+          onClick={handleHomeClick}
             sx={{
               mr: 2,
               display: { xs: 'none', md: 'flex' },
@@ -101,7 +110,7 @@ console.log(data2)
               letterSpacing: '.3rem',
               color: 'inherit',
               textDecoration: 'none',
-             
+             cursor:"pointer"
             }}
           >
 VBLOG

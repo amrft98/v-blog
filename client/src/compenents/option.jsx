@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState,useContext } from 'react';
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
@@ -9,9 +9,10 @@ import Popper from '@mui/material/Popper';
 import MenuItem from '@mui/material/MenuItem';
 import MenuList from '@mui/material/MenuList';
 import { useNavigate } from 'react-router-dom';
+import { AuthContext } from "./authContext";
 import axios from 'axios';
 export default function SplitButton(props) {
-
+  const {token}=useContext(AuthContext);
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   const anchorRef = React.useRef(null);
@@ -33,7 +34,7 @@ return false;
       id: props.value,
       action: async () => {
         try {
-          const response = await axios.post('http://localhost:8000/api/post/edit', options, { withCredentials: true });
+          const response = await axios.post('https://v-blog-4grx.onrender.com/api/post/edit', options,{headers:{Authorization:`Bearer ${token}`}} , { withCredentials: true });
           if (response.data.message !== 'true') {
             navigate("/");
           }
@@ -43,7 +44,9 @@ return false;
           }
         }
         catch (err) {
-          console.log(err);
+          if (err.response.status ===401||err.response.status===500) {
+            navigate("/");
+        }
         }
       }
     },
@@ -52,17 +55,15 @@ return false;
       id: props.value,
       action: async () => {
         try {
-          const response = await axios.delete(`http://localhost:8000/api/delete/${props.value}`, { withCredentials: true });
+          const response = await axios.delete(`https://v-blog-4grx.onrender.com/api/delete/${props.value}`,{headers:{Authorization:`Bearer ${token}`}} , { withCredentials: true });
           if(response.data.message==="0"){
 
-          }
-          else{
-
-          }
-          
+          }          
         }
         catch (err) {
-          console.log(err);
+          if (err.response.status ===401||err.response.status===500) {
+            navigate("/");
+        }
         }
         setOpen(false);
         deletecall()

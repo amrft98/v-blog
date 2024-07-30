@@ -1,8 +1,8 @@
-import React, { useEffect, useState, } from 'react';
+import React, { useEffect, useState, useContext} from 'react';
 import axios from 'axios';
 import {useNavigate,useParams} from 'react-router-dom';
 import ResponsiveAppBar from "./bar";
-
+import { AuthContext } from "./authContext";
 
 
 function SearchPosts(){
@@ -12,13 +12,12 @@ function SearchPosts(){
     const [page,setPage]=useState(intialPage);
     const [totalPages,setTotalPages]=useState(1);
     const[post0,setpost]=useState([]);
- 
+    const {token}=useContext(AuthContext);
     useEffect(()=>{
 const showposts=async()=>{
     console.log(text);
 try{
-const response=await axios.get(`http://localhost:8000/api/result/${text}?page=${page}`,{withCredentials:true});
-console.log(response.data);
+const response=await axios.get(`https://v-blog-4grx.onrender.com/api/result/${text}?page=${page}`,{headers:{Authorization:`Bearer ${token}`}} ,{withCredentials:true});
 if(response.data.message==="false"){
     navigate("/");
 }
@@ -35,7 +34,9 @@ setTotalPages(response.data.totalPages);
 
 }
 catch(err){
-console.log(err);
+  if (err.response.status ===401||err.response.status===500) {
+    navigate("/");
+}
 }
 
 };

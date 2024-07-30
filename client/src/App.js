@@ -14,7 +14,7 @@ import Home from "./compenents/home";
 import Setting from "./compenents/setting";
 import EditProfile from "./compenents/profileEdit";
 import ResetPassword from "./compenents/Reset-password";
-
+import AuthCallBack from "./compenents/authgoogle";
 function App() {
   const auth=true;
 
@@ -24,17 +24,18 @@ function App() {
   <Routes>
   <Route  path="/" element={<SignIn/>}/>
   <Route path="/Signup" element={<SignUp/>} />
+  <Route path="/auth/callback" element={<AuthCallBack/>} />
   <Route path="/forget-password" element={<ResetPassword/>}/>
-  <Route path="/my-page" element={auth ? <Pagecreate/> : <SignIn/>}/>
-  <Route path="/login" element={<SignIn/>}/>
-  <Route path="/newPost" element={auth? <Post/>:<SignIn/>}/>
-  <Route path="/edit/:id" element={<Edit/>}/>
+  <Route path="/My-page" element={auth ? <Pagecreate/> : <SignIn/>}/>
+  <Route path="/Login" element={<SignIn/>}/>
+  <Route path="/NewPost" element={auth? <Post/>:<SignIn/>}/>
+  <Route path="/Edit/:id" element={<Edit/>}/>
   <Route path="/Multi" element={<MULTI/>}/>
-  <Route path="/search/:text" element={<SearchPosts/>}/>
-  <Route path="/profile/:id" element={<Profile/>}/>
-  <Route path="/home" element={<Home/>}/>
-  <Route path="/setting" element={<Setting/>}/>
-  <Route path="/edit/Profile" element={<EditProfile/>}/>
+  <Route path="/Search/:text" element={<SearchPosts/>}/>
+  <Route path="/Profile/:id" element={<Profile/>}/>
+  <Route path="/Home" element={<Home/>}/>
+  <Route path="/Setting" element={<Setting/>}/>
+  <Route path="/Edit/Profile" element={<EditProfile/>}/>
 </Routes>
 </Router>
 <Footer/>

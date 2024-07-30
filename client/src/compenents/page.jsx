@@ -4,6 +4,7 @@ import ResponsiveAppBar from "./bar"
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import SplitButton from './option';
+import { AuthContext } from "./authContext";
 function Pagecreate() {
     const navigate = useNavigate();
     const intialPage=parseInt(localStorage.getItem('currentPagemypage'))||1;
@@ -11,12 +12,12 @@ function Pagecreate() {
     const [userid, setiduser] = useState("");
     const [page,setPage]=useState(intialPage);
     const [totalPages,setTotalPages]=useState(1);
+    const {token}=React.useContext(AuthContext);
     useEffect(() => {
         
         const showpage = async () => {
             try {
-                const response = await axios.get(`http://localhost:8000/api/my-page?page=${page}`, { withCredentials: true });
-                console.log(response.data);
+                const response = await axios.get(`https://v-blog-4grx.onrender.com/api/my-page?page=${page}`, {headers:{Authorization:`Bearer ${token}`}},{ withCredentials: true });
                 if (response.data.message !== 'true') {
                     navigate("/");
                 }
@@ -28,7 +29,9 @@ function Pagecreate() {
             }
 
             catch (err) {
-                console.log(err);
+                if (err.response.status ===401||err.response.status===500) {
+                    navigate("/");
+                }
             }
         };
         showpage();

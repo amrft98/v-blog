@@ -1,8 +1,10 @@
-import React,{useState} from "react";
+import React,{useState,useContext} from "react";
 import './signup.css';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
+import { AuthContext } from "./authContext";
 function SignUp (){
+  const {setToken}=useContext(AuthContext);
     const [formData, setFormData] = useState({
         fname: '',
         lname:'',
@@ -31,18 +33,23 @@ function SignUp (){
       }
       else{
       try {
-        const response = await axios.post('http://localhost:8000/api/signup', formData,{withCredentials:true});
-     console.log(response.data.message);
+        const response = await axios.post('https://v-blog-4grx.onrender.com/api/signup', formData,{withCredentials:true});
+   console.log(response.data.token);
+        const Token=response.data.token;
    if(response.data.message==="email is already exist"){
     alert("email is already exist")
     
    }
    else if(response.data.message==="success"){
-navigate('/my-page');
+
+setToken(Token);
+navigate('/home');
    }
+
       } catch (error) {
         console.log('Error:', error);
       }
+
       };}
 const navigate=useNavigate();
 function handleClick(){
